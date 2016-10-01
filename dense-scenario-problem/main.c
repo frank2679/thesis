@@ -57,7 +57,7 @@ int main(){
     /* energy efficiency estimate: J/bit */
         energy_eff = solve_energy_efficiency(Num_sta[i]);
         fprintf(fp_3, "%d     %.4f    %.4f  %.4f    %.4f    %.4f    %.4f    %.4f\n", 
-                Num_sta[i], St, Sr, Si, St*Wt, Sr*Wr, Si*Wi, energy_eff);
+                Num_sta[i], St, Sr, Si, St*Wt*avg_slot/1000000.0, Sr*Wr*avg_slot/1000000.0, Si*Wi*avg_slot/1000000.0, energy_eff);
     }
     fclose(fp_1);
     fclose(fp_2);
@@ -71,7 +71,7 @@ double solve_energy_efficiency(n){
     Si = ((1-p_tr)*theta + p_tr*p_s*(DIFS+SIFS)+p_tr*(1-p_s)*SIFS)/avg_slot; 
     Sr = 1 - St - Si;
     double energy = 0.0;
-    energy = St*Wt + Sr*Wr + Si*Wi;
+    energy = (St*Wt + Sr*Wr + Si*Wi)*avg_slot/1000000.0; // for unit transmission, mAs
     double sentBit = 0.0;
     sentBit = p_s*p_tr*P/n;
     printf("avg slot time: %.3f\n", avg_slot);
