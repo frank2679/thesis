@@ -2,7 +2,9 @@
  *
  *
  * Bug: when n is not integer, it is the same with the value of integral part. 
- *
+ * Experience: 
+ *      1. different comment level using multiple slashes 
+ *      2. global variable name should be short, while local variable name should be long.
  *
  *
  * Frank 
@@ -13,53 +15,77 @@
 #include "myhead.h"
 
 #define PRECISE 0.000001
-int OCW = 18; // initial contention window size. 
-int m = 3; // backoff levels
-int N = 15; // # of STAs need contend
-int n = 10; // # of STAs sending BSR at current stage
-int M = 9; // # of RUs for random access
+double OCW = 18;           // initial contention window size. 
+double m = 3;              // backoff levels
+double n = 0;             // # of STAs sending BSR at current stage
+double M = 9;              // # of RUs for random access
+double tau = 0.0;          // prob. of transmission of STA
+
 
 
 int main(){
-    /* as index for "for" loop */
-    int i = 0;
-    /* kmax is the up bound of k; */
-    int kmax = 0;
-    if (M < n)
-        kmax = M;
-    else 
-        kmax = n;
+    /* total parameters */
+    int     i = 0;          // as index for "for" loop
+    double  p = 0.0;        // prob. of collission seen by a packet
+    int     Num_sta_input[9] = {2,5,10,20,30,50,70,90,100}; // for estimate dense scenario problem
+    double  Ps = 0.0;       // prob. of success contend in a stage
+    double  ns = 0.0;       // # of STAs suc contend in a stage
+    double  stages = 0.0;   // # of stages until a suc stage
 
-    double p = 0.0; 
-    for (; i < kmax+1; i++){
+    // test [ 
+    /*
+    n = 5.0;
+    for (i = 0;i < n+1; i++){
         p += pmf_suc_contend(i);
     }
-    printf("total prob. = %.3f\n", p);
-
-    /* calculate tau and p */
-    /*
-    double tau = 0.0;
-    p = solve_tau_p(n, PRECISE); // collision probability
-    tau = (1-pow(1-p, 1.0/(n-1.0)))*M; 
-    printf("collsion probability: %.3f\n", p);
-    printf("transmission probability: %.3f\n", tau);
+    printf("total prob.: %.3f\n", p);
+    return 0;
     */
-    //* to put into file *//
-    FILE *fp_1;
-    int Num_sta[9] = {2,5,10,20,30,50,70,90,100}; // for estimate dense scenario problem
+    // end test ] 
 
-    double tau[9] = {0};
+
+    FILE *fp_1, *fp_2, *fp_3, *fp_4;
 
     fp_1 = fopen("n_tau_p.dat", "a");
-    fprintf(fp_1, "# backoff stages: %d \n", m);
-    for (i = 0; i < 9; i++){
-    /* tau vs n */
-        p = solve_tau_p(Num_sta[i], PRECISE);
-        tau[i] = (1-pow(1-p, 1.0/(Num_sta[i]-1.0)))*M;
-        fprintf(fp_1, "%d     %.5f    %.5f\n", Num_sta[i], tau[i], p);
+    fp_2 = fopen("n_Ps.dat", "a");
+    fp_3 = fopen("n_ns.dat", "a");
+    fp_4 = fopen("n_stages.dat", "a");
+
+    fprintf(fp_1, "# backoff stages: %.3f \n", m);
+    fprintf(fp_1, "# initial OCW: %.3f \n", OCW);
+
+    fprintf(fp_2, "# initial OCW: %.3f \n", OCW);
+    fprintf(fp_2, "# initial OCW: %.3f \n", OCW);
+
+    fprintf(fp_3, "# backoff stages: %.3f \n", m);
+    fprintf(fp_3, "# initial OCW: %.3f \n", OCW);
+
+    fprintf(fp_4, "# backoff stages: %.3f \n", m);
+    fprintf(fp_4, "# initial OCW: %.3f \n", OCW);
+
+
+    for (n = 1; n < 101; n++){
+
+        /* calculate tau and p */
+        p = solve_tau_p(PRECISE);
+        if (n > 1)
+            tau = (1-pow(1-p, 1.0/(n-1.0)))*M;
+        else
+            tau = (OCW+1.0)/(3.0*OCW-M+1.0);
+        fprintf(fp_1, "%.3f     %.5f    %.5f\n", n, tau, p);
+
+        /* calculate Ps, ns, # of stages until a suc stage */ 
+        Ps = compute_Ps();
+        fprintf(fp_2, "%.3f       %.5f\n", n, Ps);
+
+        ns = compute_ns();
+        fprintf(fp_3, "%.3f       %.5f\n", n, ns);
+
+        stages = compute_stages_suc(Ps);
+        fprintf(fp_4, "%.3f       %.5f\n", n, stages);
     }
-
-
     fclose(fp_1);
+    
+
     return 0;
 }
