@@ -1,0 +1,10 @@
+The first function of my own to compute combinations. 
+Usage: 
+1. include file "my_math.h" to header of your header or c file. 
+2. see the makefile content: 
+    random: main.o my_math.o
+	    gcc main.o my_math.o -lm -o random
+    main.o: main.c 
+	    gcc main.c -c 
+    my_math.o: my_math.c	
+    	gcc my_math.c -c 

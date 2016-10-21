@@ -7,6 +7,7 @@ extern double m; // # of contention window levels
 extern double n; // # of STAs sending BSR at current stage
 extern double M; // # of RUs for random access
 extern double tau;
+extern double p;
 
 /* for problem of r balls in n cells */
 double pmf_suc_contend(double k){ // k cells which only contain single ball
@@ -125,6 +126,11 @@ double compute_ns(){
     for (; i < kmax+1; i++){
         num_suc_STA += i*pmf_suc_contend(i);
     }
+    /* second way to compute mean of ns */
+    //num_suc_STA = ceil(tau*n)*pow(1.0-1.0/M, ceil(tau*n)-1);
+    
+    /* third way to compute mean of ns */
+    num_suc_STA = (1-p)*tau*n;
     //printf("expected # of success STAs in a stage = %.3f\n", num_suc_STA);
     return num_suc_STA;
 }

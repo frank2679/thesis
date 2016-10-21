@@ -20,13 +20,13 @@ double m = 3;              // backoff levels
 double n = 0;             // # of STAs sending BSR at current stage
 double M = 9;              // # of RUs for random access
 double tau = 0.0;          // prob. of transmission of STA
+double p = 0.0;          // prob. of transmission of STA
 
 
 
 int main(){
     /* total parameters */
     int     i = 0;          // as index for "for" loop
-    double  p = 0.0;        // prob. of collission seen by a packet
     int     Num_sta_input[9] = {2,5,10,20,30,50,70,90,100}; // for estimate dense scenario problem
     double  Ps = 0.0;       // prob. of success contend in a stage
     double  ns = 0.0;       // # of STAs suc contend in a stage
