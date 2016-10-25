@@ -27,22 +27,37 @@ int suc_STA[100] = {0}; // store index of STAs who succeed
 int col_STA[100] = {0}; // store index of STAs who collide 
 
 /* statistics */
-int num_stage = 0;
-int num_fail_stage = 0;
-int num_suc_stage = 0;
-int num_suc_STA = 0;
+long int num_stage = 0;
+long int num_fail_stage = 0;
+long int num_suc_stage = 0;
+long int num_suc_STA = 0;
+long int num_attempt = 0; // number of attempt in total, to compute tau
+long int num_suc_attempt = 0;// number of suc attempt of a given STA, to compute p
+int r_num_suc_STA = 0; // real time value, # of suc STA in single stage
+int r_num_active_STA = 0; // real time value, # of active STA in single stage
+double tau = 0.0;
+double p = 0.0;
 
 int main(){
-    FILE *fp;
-    fp = fopen("n_ns_stages.dat", "a");
-    fprintf(fp, "n      ns      Ns_stage\n");
+    FILE *fp_1, *fp_2, *fp_3;
+    fp_1 = fopen("n_ns_simu.dat", "a");
+    fp_2 = fopen("n_stages_simu.dat", "a");
+    fp_3 = fopen("n_tau_p_simu.dat", "a");
+    fprintf(fp_1, "n      ns\n");
+    fprintf(fp_2, "n      Ns_stage\n");
+    fprintf(fp_3, "n      tau       p\n");
     srand(time(NULL));
-    n = 100;
-   // for (n = 5; n < 101; n++){
-        simulate(n, 9, 3, 18, 4000000); // n, M, m, OCW, end
-        data_analysis(fp);
-  //  }
-    fclose(fp);
+    n = 1;
+    m = 3;
+    M = 9;
+    OCW = 18;
+    for (n = 1; n < 101; n++){
+        simulate(n, M, m, OCW, 100000); // n, M, m, OCW, end
+        data_analysis(fp_1, fp_2, fp_3);
+    }
+    fclose(fp_1);
+    fclose(fp_2);
+    fclose(fp_3);
 
     return 0;
 }

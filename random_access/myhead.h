@@ -6,6 +6,9 @@ double pmf_suc_contend(double k); // prob. of exact k STAs who success contend
 /* for saturated analysis of random access */
 double solve_tau_p(double Precise);
 double equation(double p);
+double compute_tau_1(double p);
+double compute_tau_2(double p);
+double compute_Xi(int i);
 
 /* calculate Ps & ns & level */ 
 /* Ps: prob. of success contend in a stage

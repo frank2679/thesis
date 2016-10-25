@@ -27,7 +27,6 @@ double p = 0.0;          // prob. of transmission of STA
 int main(){
     /* total parameters */
     int     i = 0;          // as index for "for" loop
-    int     Num_sta_input[9] = {2,5,10,20,30,50,70,90,100}; // for estimate dense scenario problem
     double  Ps = 0.0;       // prob. of success contend in a stage
     double  ns = 0.0;       // # of STAs suc contend in a stage
     double  stages = 0.0;   // # of stages until a suc stage
@@ -46,10 +45,10 @@ int main(){
 
     FILE *fp_1, *fp_2, *fp_3, *fp_4;
 
-    fp_1 = fopen("n_tau_p.dat", "a");
-    fp_2 = fopen("n_Ps.dat", "a");
-    fp_3 = fopen("n_ns.dat", "a");
-    fp_4 = fopen("n_stages.dat", "a");
+    fp_1 = fopen("n_tau_p_math.dat", "a");
+    fp_2 = fopen("n_Ps_math.dat", "a");
+    fp_3 = fopen("n_ns_math.dat", "a");
+    fp_4 = fopen("n_stages_math.dat", "a");
 
     fprintf(fp_1, "# backoff stages: %.3f \n", m);
     fprintf(fp_1, "# initial OCW: %.3f \n", OCW);
@@ -67,11 +66,14 @@ int main(){
     for (n = 1; n < 101; n++){
 
         /* calculate tau and p */
-        p = solve_tau_p(PRECISE);
-        if (n > 1)
-            tau = (1-pow(1-p, 1.0/(n-1.0)))*M;
-        else
-            tau = (OCW+1.0)/(3.0*OCW-M+1.0);
+        if (n > 1){
+            p = solve_tau_p(PRECISE);
+            tau = compute_tau_1(p); // simpler but not fit for "n=1" 
+        }
+        else{
+            p = 0;
+            tau = compute_tau_2(p);
+        }
         fprintf(fp_1, "%.3f     %.5f    %.5f\n", n, tau, p);
 
         /* calculate Ps, ns, # of stages until a suc stage */ 

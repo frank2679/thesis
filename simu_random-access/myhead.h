@@ -5,7 +5,7 @@ void simulate(int n_l, int M_l, int m_l, int OCW_l, int end_l);
 void system_initial(int, int, int, int, int); // initialize system parameters 
 void display_system_state();
 /* data analysis */
-void data_analysis(FILE *);
+void data_analysis(FILE *, FILE *, FILE *);
 
 /* operation */
 void generate_OBO();

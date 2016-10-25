@@ -8,5 +8,6 @@ my_math.o: my_math.c
 	gcc my_math.c -c 
 clean: 
 	rm -rf *.o
+	rm -rf *.dat
 run: 
 	./random_access

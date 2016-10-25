@@ -6,5 +6,6 @@ module.o: module.c
 	gcc module.c -c 
 clean: 
 	rm -rf *.o
+	rm -rf *.dat
 run: 
 	./simu_random-access

@@ -8,3 +8,6 @@ Usage:
 	    gcc main.c -c 
     my_math.o: my_math.c	
     	gcc my_math.c -c 
+
+Requirement: 
+    This mathematical analysis is only for "OCW <= 2M". For "OCW > 2M", I have not implemented. 

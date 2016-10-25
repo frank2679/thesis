@@ -20,10 +20,16 @@ extern int suc_STA[100];
 extern int col_STA[100];
 
 /* statistics */
-extern int num_stage;
-extern int num_fail_stage;
-extern int num_suc_stage;
-extern int num_suc_STA;
+extern long int num_stage;
+extern long int num_fail_stage;
+extern long int num_suc_stage;
+extern long int num_suc_STA; // # of STAs times in total stages
+extern long int num_attempt; // # of attempt of STA 0 in total stages
+extern long int num_suc_attempt; // # of suc attempt of STA 0 in total stages
+extern int r_num_suc_STA; // real time value, # of suc STA in single stage
+extern int r_num_active_STA; // real time value, # of active STA in single stage
+extern double tau;
+extern double p;
 
 /* system level */
 void system_initial(int n_l, int M_l, int m_l, int OCW_l, int end_l){ // initialize system parameters 
@@ -51,6 +57,16 @@ void system_initial(int n_l, int M_l, int m_l, int OCW_l, int end_l){ // initial
         suc_STA[i] = 0;  // assume all station are suc
         col_STA[i] = 0; 
     }
+    // reset statistics
+    num_stage = 0;
+    num_fail_stage = 0;
+    num_suc_stage = 0;
+    num_suc_STA = 0;
+    num_attempt = 0;
+    num_suc_attempt = 0;
+    r_num_suc_STA = 0;
+    r_num_active_STA = 0;
+    // generate OBO
     generate_OBO();
 }
 
@@ -64,24 +80,16 @@ void simulate(int n_l, int M_l, int m_l, int OCW_l, int end_l){ // this funtion 
         update_active_STA();
 
         generate_selected_RU();
- //       printf("generate selected RU\n");
-  //      display_system_state();
 
         set_suc_STA();
-  //      printf("set_suc_STA\n");
-  //      display_system_state();
 
         set_back_level();
-  //      printf("set backoff level\n");
-  //      display_system_state();
 
         record_statistic();
+//        display_system_state();
 
         update_system_state();
-  //      printf("update system state\n");
-  //      display_system_state();
 
-  //      printf("num_suc_STA: %3d, num_suc_stage: %3d \n\n\n", num_suc_STA, num_suc_stage);
     }
 
 }
@@ -129,23 +137,36 @@ void display_system_state(){
     for (i = 0; i < n+1; i++){
         printf("%3d  ", col_STA[i]);
     }
-    printf("\n---------------------------\n\n");
+    printf("\n");
+    printf("In this stage, num_active_STA:  %d,    r_num_suc_STA: %d\n", r_num_active_STA, r_num_suc_STA);
+    printf("---------------------------\n\n");
 }
 
 /* data analysis */
-void data_analysis(FILE *fp){
+void data_analysis(FILE *fp_1, FILE *fp_2, FILE *fp_3){
     double ns = 0.0; 
     double Ns_stage = 0.0; 
     num_stage = num_fail_stage + num_suc_stage;
-    if (num_stage == end_stage)
-        printf("time validated.\n");
-    else
+    if (num_stage == end_stage){
+        printf("n: %d, time validated.\n", n);
+        printf("suc stages: %ld, fail stages: %ld, sum stages: %ld\n", 
+                 num_suc_stage, num_fail_stage, num_stage);
+    }
+    else{
         printf("time not validated.\n");
+        printf("suc stages: %ld, fail stages: %ld, sum stages: %ld\n", 
+                num_suc_stage, num_fail_stage, num_stage);
+    }
 
     ns = (double) (num_suc_STA)/ (double) num_stage;// -n is because the initialization add n num_suc_STA
     Ns_stage = (double) num_stage/ (double) num_suc_stage;
-    fprintf(fp, "%d     %.3f     %.3f\n", n, ns, Ns_stage);
-    printf("num_suc_stage: %3d,  ns: %.3f,     Ns_stage: %.3f\n", num_suc_stage, ns, Ns_stage);
+    tau = (double) num_attempt / (double) end_stage;
+    p = 1.0 - (double) num_suc_attempt/ (double) num_attempt;
+    fprintf(fp_1, "%d     %.3f\n", n, ns);
+    fprintf(fp_2, "%d     %.3f\n", n, Ns_stage);
+    fprintf(fp_3, "num_attempt: %ld     num_suc_attempt: %ld\n", num_attempt, num_suc_attempt);
+    fprintf(fp_3, "%d     %.3f        %.3f\n", n, tau, p);
+    //printf("ns: %.3f,     Ns_stage: %.3f,   tau: %.3f,      p: %.3f\n", ns, Ns_stage, tau, p);
 }
 
 /* operation */
@@ -159,6 +180,7 @@ void generate_OBO(){
             active_STA[i] = 0; // reset the active_STA[]
         }
     }
+//    printf("current OCW: %d\n", curr_OCW);
     //display_system_state();
 }
 
@@ -225,16 +247,24 @@ void set_suc_STA(){
     }
     else
         num_fail_stage++;
-
 }
 
 void record_statistic(){
     int i = 0;
+    r_num_suc_STA = 0; // real time value, record the suc STA # in this stage
     for (; i < n; i++){
-        if (suc_STA[i] > 0){
-            num_suc_STA++;
+        if (active_STA[i] > 0){
+            r_num_active_STA++;
+            if (suc_STA[i] > 0){
+                r_num_suc_STA++;
+            }
         }
     }
+    num_suc_STA += r_num_suc_STA;
+    if (active_STA[0] > 0)
+        num_attempt++;
+    if (suc_STA[0] > 0)
+        num_suc_attempt++;
 }
 
 void set_back_level(){
@@ -263,6 +293,9 @@ void update_system_state(){
         /* update selected RU */
         selected_RU[i] = 0;
     }
+    /* update real time state */
+    r_num_suc_STA = 0;
+    r_num_active_STA = 0;
     /* generate next OBO */
     generate_OBO();
 }
