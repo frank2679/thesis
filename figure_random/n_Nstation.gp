@@ -42,7 +42,7 @@ unset grid
 set raxis
 set style parallel front  lt black linewidth 2.000 dashtype solid
 set key title "" center
-set key at 100.000, 1.45000, 0.00000 right top vertical Right noreverse enhanced autotitle nobox font ",14"
+set key at 50.0000, 38.0000, 0.00000 right top vertical Right noreverse enhanced autotitle nobox font ",14"
 set key noinvert samplen 4 spacing 1 width 0 height 0 
 set key maxcolumns 0 maxrows 0
 set key noopaque
@@ -127,7 +127,7 @@ set x2label ""
 set x2label  font "" textcolor lt -1 norotate
 set xrange [ 0.00000 : 100.000 ] noreverse nowriteback
 set x2range [ 2.00000 : 100.000 ] noreverse nowriteback
-set ylabel "number of stages until a success stage" 
+set ylabel "number of stages for a success contend of STA" 
 set ylabel  font ",14" textcolor lt -1 rotate by -270
 set y2label "" 
 set y2label  font "" textcolor lt -1 rotate by -270
@@ -166,6 +166,6 @@ set psdir
 set fit brief errorvariables nocovariancevariables errorscaling prescale nowrap v5
 GNUTERM = "qt"
 x = 0.0
-## Last datafile plotted: "n_stages_simu.dat"
-plot "n_stages_math.dat" u 1:2 w l lw 2 t "mathematical analysis", "n_stages_simu.dat" u 1:2 w p t "simulation"
+## Last datafile plotted: "n_Nstation_simu.dat"
+plot "n_Nstation_math.dat" u 1:2 w l lw 2 t "mathematical analysis", "n_Nstation_simu.dat" u 1:2 w p t "simulation"
 #    EOF

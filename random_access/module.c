@@ -114,27 +114,32 @@ double compute_Xi(int i){ // fit for any i: [0, Wi]
 
 /* compute Ps & ns */
 /* calculate Ps & ns */ 
-/* Ps: prob. of success contend in a stage
+/* Ps: prob. of station succeeding contending in a stage 
  * ns: # of STAs success contend in a stage
  */
 //* compute Ps *//
 double compute_Ps(){
+    /* first method 
     double prob_no_suc_stage = 0.0;
     double prob_suc_stage = 0.0;
 
     prob_no_suc_stage = pmf_suc_contend(0);
     //printf("n= %.3f,  Ps(0): %.3f\n", n, prob_no_suc_stage);
     prob_suc_stage = 1.0 - prob_no_suc_stage;
+    */
+
+    double prob_suc_station = 0.0;
+    prob_suc_station = tau*(1-p);
     /* second method */
-    prob_suc_stage = 1.0 - pow(1.0-tau*(1.0-p),n);
-    return prob_suc_stage;
+    return prob_suc_station;
 }
 
 //* compute ns *//
 double compute_ns(){
-    /* kmax is the up bound of k; */
-    double kmax = 0.0; // the most # of suc STAs in a stage
     double num_suc_STA = 0.0;
+    /* kmax is the up bound of k; */
+    /* first method 
+    double kmax = 0.0; // the most # of suc STAs in a stage
     if (M < n)
         kmax = M;
     else 
@@ -144,7 +149,9 @@ double compute_ns(){
     for (; i < kmax+1; i++){
         num_suc_STA += i*pmf_suc_contend(i);
     }
-    /* second way to compute mean of ns */
+    */
+
+    /* second method to compute mean of ns */
     //num_suc_STA = ceil(tau*n)*pow(1.0-1.0/M, ceil(tau*n)-1);
     
     /* third way to compute mean of ns */
@@ -154,6 +161,8 @@ double compute_ns(){
 }
 
 //* compute # of stages until suc stage *//
-double compute_stages_suc(double prob_suc_stage){ 
+double compute_stages_suc(){ 
+    double prob_suc_stage = 0.0;
+    prob_suc_stage = 1.0 - pow(1.0-tau*(1.0-p),n);
     return 1.0/prob_suc_stage;
 }

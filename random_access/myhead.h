@@ -17,4 +17,4 @@ double compute_Xi(int i);
  */
 double compute_Ps();
 double compute_ns();
-double compute_stages_suc(double prob_suc_stage); 
+double compute_stages_suc(); 

@@ -39,25 +39,28 @@ double tau = 0.0;
 double p = 0.0;
 
 int main(){
-    FILE *fp_1, *fp_2, *fp_3;
+    FILE *fp_1, *fp_2, *fp_3, *fp_4;
     fp_1 = fopen("n_ns_simu.dat", "a");
-    fp_2 = fopen("n_stages_simu.dat", "a");
-    fp_3 = fopen("n_tau_p_simu.dat", "a");
-    fprintf(fp_1, "n      ns\n");
-    fprintf(fp_2, "n      Ns_stage\n");
-    fprintf(fp_3, "n      tau       p\n");
+    fp_2 = fopen("n_Nstage_simu.dat", "a");
+    fp_3 = fopen("n_Nstation_simu.dat", "a");
+    fp_4 = fopen("n_tau_p_simu.dat", "a");
+    fprintf(fp_1, "#n      ns\n");
+    fprintf(fp_2, "#n      Ns_stage\n");
+    fprintf(fp_3, "#n      Ns_station\n");
+    fprintf(fp_4, "#n      tau       p\n");
     srand(time(NULL));
     n = 1;
     m = 3;
     M = 9;
     OCW = 18;
     for (n = 1; n < 101; n++){
-        simulate(n, M, m, OCW, 100000); // n, M, m, OCW, end
-        data_analysis(fp_1, fp_2, fp_3);
+        simulate(n, M, m, OCW, 500000); // n, M, m, OCW, end
+        data_analysis(fp_1, fp_2, fp_3, fp_4);
     }
     fclose(fp_1);
     fclose(fp_2);
     fclose(fp_3);
+    fclose(fp_4);
 
     return 0;
 }

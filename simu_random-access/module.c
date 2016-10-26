@@ -143,9 +143,10 @@ void display_system_state(){
 }
 
 /* data analysis */
-void data_analysis(FILE *fp_1, FILE *fp_2, FILE *fp_3){
+void data_analysis(FILE *fp_1, FILE *fp_2, FILE *fp_3, FILE *fp_4){
     double ns = 0.0; 
     double Ns_stage = 0.0; 
+    double Ns_station = 0.0;
     num_stage = num_fail_stage + num_suc_stage;
     if (num_stage == end_stage){
         printf("n: %d, time validated.\n", n);
@@ -160,12 +161,14 @@ void data_analysis(FILE *fp_1, FILE *fp_2, FILE *fp_3){
 
     ns = (double) (num_suc_STA)/ (double) num_stage;// -n is because the initialization add n num_suc_STA
     Ns_stage = (double) num_stage/ (double) num_suc_stage;
+    Ns_station = (double) num_stage/ (double) num_suc_STA * n;
     tau = (double) num_attempt / (double) end_stage;
     p = 1.0 - (double) num_suc_attempt/ (double) num_attempt;
     fprintf(fp_1, "%d     %.3f\n", n, ns);
     fprintf(fp_2, "%d     %.3f\n", n, Ns_stage);
-    fprintf(fp_3, "num_attempt: %ld     num_suc_attempt: %ld\n", num_attempt, num_suc_attempt);
-    fprintf(fp_3, "%d     %.3f        %.3f\n", n, tau, p);
+    fprintf(fp_3, "%d     %.3f\n", n, Ns_station);
+    //fprintf(fp_4, "num_attempt: %ld     num_suc_attempt: %ld\n", num_attempt, num_suc_attempt);
+    fprintf(fp_4, "%d     %.3f        %.3f\n", n, tau, p);
     //printf("ns: %.3f,     Ns_stage: %.3f,   tau: %.3f,      p: %.3f\n", ns, Ns_stage, tau, p);
 }
 

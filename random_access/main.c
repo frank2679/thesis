@@ -46,9 +46,9 @@ int main(){
     FILE *fp_1, *fp_2, *fp_3, *fp_4;
 
     fp_1 = fopen("n_tau_p_math.dat", "a");
-    fp_2 = fopen("n_Ps_math.dat", "a");
-    fp_3 = fopen("n_ns_math.dat", "a");
-    fp_4 = fopen("n_stages_math.dat", "a");
+    fp_2 = fopen("n_Nstation_math.dat", "a"); // # of stages for a STA to succeed 
+    fp_3 = fopen("n_ns_math.dat", "a");       // # of suc stations in a stage
+    fp_4 = fopen("n_Nstage_math.dat", "a"); // # of stages until a success stage
 
     fprintf(fp_1, "# backoff stages: %.3f \n", m);
     fprintf(fp_1, "# initial OCW: %.3f \n", OCW);
@@ -77,13 +77,13 @@ int main(){
         fprintf(fp_1, "%.3f     %.5f    %.5f\n", n, tau, p);
 
         /* calculate Ps, ns, # of stages until a suc stage */ 
-        Ps = compute_Ps();
-        fprintf(fp_2, "%.3f       %.5f\n", n, Ps);
+        Ps = compute_Ps(); // prob. of a station succeeding contending 
+        fprintf(fp_2, "%.3f       %.5f\n", n, 1.0/Ps);
 
         ns = compute_ns();
         fprintf(fp_3, "%.3f       %.5f\n", n, ns);
 
-        stages = compute_stages_suc(Ps);
+        stages = compute_stages_suc();
         fprintf(fp_4, "%.3f       %.5f\n", n, stages);
     }
     fclose(fp_1);
