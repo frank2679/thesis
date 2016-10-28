@@ -106,10 +106,10 @@ double compute_tau_2(double p){ // fit for any p
         return (OCW+1.0)/(OCW+1.0+sum);
     }
 }
-double compute_Xi(int i){ // fit for any i: [0, Wi]
+double compute_Xi(int i){ // fit for any i: [0, m]
     double OCW_i = 0.0; 
-    OCW_i = pow(2.0,i)*(OCW+1.0) - 1; // 2^i(W0+1)-1 = Wi
-    return -M/2.0*ceil(OCW_i/M)*ceil(OCW_i/M) + (OCW_i-M/2.0)*ceil(OCW_i/M);
+    OCW_i = pow(2.0,i)*(OCW+1.0) - 1.0; // 2^i(W0+1)-1 = Wi
+    return -M/2.0*floor(OCW_i/M)*floor(OCW_i/M) + (OCW_i-M/2.0)*floor(OCW_i/M);
 }
 
 /* compute Ps & ns */
